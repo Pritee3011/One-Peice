@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GigSarthi – Intelligence Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --void: #080B12;
+      --deep: #0D1117;
+      --surface: #161B27;
+      --card: #1C2333;
+      --border: #2A3142;
+      --dim: #8892A4;
+      --text: #C9D1E0;
+      --bright: #E8EDF5;
+      --accent: #3B82F6; /* Data Blue */
+      --accent-glow: #60A5FA;
+      --emerald: #10B981;
+      --amber: #F59E0B;
+      --rose: #F43F5E;
+      --purple: #8B5CF6;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--void);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--deep); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* Grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      text-align: center;
+      padding: 72px 0 56px;
+      position: relative;
+    }
+
+    header::after {
+      content: '';
+      display: block;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(59,130,246,0.4), transparent);
+      margin-top: 48px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--dim);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 8px;
+      margin-bottom: 32px;
+      transition: all 0.2s;
+    }
+    .back-btn:hover { color: var(--accent); border-color: var(--accent); background: rgba(59,130,246,0.05); }
+
+    .tag {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.2);
+      padding: 4px 12px;
+      border-radius: 999px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 800;
+      color: var(--bright);
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    h1 span {
+      background: linear-gradient(135deg, #93C5FD, #3B82F6, #1E3A8A);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      color: var(--dim);
+      font-size: 1rem;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── STATS ROW ── */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin: 40px 0 0;
+      flex-wrap: wrap;
+    }
+
+    .stat { text-align: center; }
+    .stat-value { font-weight: 700; font-size: 1.5rem; color: var(--bright); }
+    .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; }
+
+    /* ── FILTER TABS ── */
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    .filter-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 7px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--dim);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(59,130,246,0.08);
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 12px rgba(59,130,246,0.3);
+      font-weight: bold;
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 20px;
+    }
+
+    /* ── GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background-image: linear-gradient(135deg, rgba(59,130,246,0.03) 0%, transparent 60%);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(59,130,246,0.5), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .card:hover {
+      border-color: rgba(59,130,246,0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 0 0 1px rgba(59,130,246,0.15), 0 12px 40px rgba(0,0,0,0.5), 0 0 60px rgba(59,130,246,0.06);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .feature-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.2);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-weight: 700;
+    }
+
+    .difficulty-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .difficulty-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .diff-easy {
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.25);
+      color: var(--emerald);
+    }
+    .diff-easy::before { background: var(--emerald); }
+
+    .diff-medium {
+      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(245,158,11,0.25);
+      color: var(--amber);
+    }
+    .diff-medium::before { background: var(--amber); }
+
+    .diff-hard {
+      background: rgba(244,63,94,0.1);
+      border: 1px solid rgba(244,63,94,0.25);
+      color: var(--rose);
+    }
+    .diff-hard::before { background: var(--rose); }
+
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--bright);
+      line-height: 1.3;
+      transition: color 0.2s;
+    }
+
+    .card:hover h3 { color: var(--accent-glow); }
+
+    .card p {
+      font-size: 0.85rem;
+      color: var(--dim);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(59,130,246,0.2), transparent);
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-type {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .arrow-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .card:hover .arrow-btn {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(8,11,18,0.85);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 88vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 80px rgba(0,0,0,0.8);
+      transform: translateY(20px);
+      transition: transform 0.3s;
+    }
+
+    .modal-overlay.open .modal { transform: translateY(0); }
+
+    .modal-header {
+      padding: 24px 24px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .modal-header h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--bright);
+    }
+
+    .modal-header p {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--dim);
+      margin-top: 4px;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--dim);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .close-btn:hover { color: var(--bright); border-color: var(--accent); }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-body p {
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .modal-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .meta-chip {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      color: var(--dim);
+      background: var(--deep);
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .close-full-btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--dim);
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .close-full-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(59,130,246,0.05); }
+
+    /* ── HIDDEN class for filter ── */
+    .card-item.hidden { display: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: 1fr; }
+      h1 { font-size: 2rem; }
+      .stats { gap: 24px; }
+    }
+
+    /* fade-in animation */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .card-item { animation: fadeUp 0.5s ease forwards; }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <header>
+    <a href="/" target="_top" class="back-btn">&#8592; Back Home</a>
+    <div class="tag">&#10022; Core ML Engine</div>
+    <h1>Gig<span>Sarthi</span></h1>
+    <p class="subtitle">Analyze gig worker data, build machine learning models, and simulate intelligent data-driven decisions.</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-value">15</div><div class="stat-label">Modules</div></div>
+      <div class="stat"><div class="stat-value">2</div><div class="stat-label">Easy</div></div>
+      <div class="stat"><div class="stat-value">8</div><div class="stat-label">Medium</div></div>
+      <div class="stat"><div class="stat-value">5</div><div class="stat-label">Hard</div></div>
+    </div>
+  </header>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterCards('all', this)">All 15</button>
+    <button class="filter-btn" onclick="filterCards('easy', this)">Easy 2</button>
+    <button class="filter-btn" onclick="filterCards('medium', this)">Medium 8</button>
+    <button class="filter-btn" onclick="filterCards('hard', this)">Hard 5</button>
+  </div>
+
+  <p class="section-label">// click any module to expand technical details</p>
+
+  <div class="grid" id="featureGrid">
+    </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOnBg(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h2 id="modalTitle"></h2>
+        <p id="modalMeta"></p>
+      </div>
+      <button class="close-btn" onclick="closeModal()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-meta" id="modalChips"></div>
+      <p id="modalDesc"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="close-full-btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const features = [
+    {
+      title: "Web Scraping & Data Awakening",
+      diff: "Hard", type: "Data Extraction", diffClass: "diff-hard",
+      chips: ["BeautifulSoup", "Selenium", "Pandas"],
+      desc: "Extract raw gig economy data dynamically from platforms like Freelancer and convert it into a structured, usable dataset."
+    },
+    {
+      title: "Cleaning & EDA Engine",
+      diff: "Medium", type: "Processing", diffClass: "diff-medium",
+      chips: ["Matplotlib", "Seaborn", "Missing Values"],
+      desc: "Scrub the dataset of missing or duplicate values and automatically generate multiple exploratory graphs outlining core insights."
+    },
+    {
+      title: "Stability Analysis",
+      diff: "Medium", type: "Analysis", diffClass: "diff-medium",
+      chips: ["Variance", "Rolling Means", "Workloads"],
+      desc: "Perform deep-dive statistical analysis to map out income consistency versus fluctuating workload patterns over time."
+    },
+    {
+      title: "Data Awakening & Cleaning Engine",
+      diff: "Easy", type: "Processing", diffClass: "diff-easy",
+      chips: ["Pandas", "CSV", "Pre-processing"],
+      desc: "A secure staging module to load external user-provided datasets and thoroughly prepare the data pipelines for deep analysis."
+    },
+    {
+      title: "Standardization & Outlier Detection",
+      diff: "Medium", type: "Processing", diffClass: "diff-medium",
+      chips: ["Z-Score", "MinMaxScaler", "IQR"],
+      desc: "Normalize diverse data formats, scale numerical values appropriately, and deploy algorithms to detect and isolate statistical anomalies."
+    },
+    {
+      title: "Feature Engineering & Income Analysis",
+      diff: "Medium", type: "Feature Engineering", diffClass: "diff-medium",
+      chips: ["Efficiency Score", "Distributions", "KDE"],
+      desc: "Engineer advanced synthetic features such as an 'Efficiency Score' and comprehensively analyze the shape of the income distribution."
+    },
+    {
+      title: "Time Series Intelligence",
+      diff: "Medium", type: "Analysis", diffClass: "diff-medium",
+      chips: ["Statsmodels", "Seasonality", "Trend Analysis"],
+      desc: "Analyze temporal data to identify underlying trends, cyclical seasonality, and long-term macro patterns in the gig ecosystem."
+    },
+    {
+      title: "Worker Intelligence Engine",
+      diff: "Hard", type: "ML Engine", diffClass: "diff-hard",
+      chips: ["Clustering", "K-Means", "Risk Scoring"],
+      desc: "Deploy unsupervised clustering algorithms to accurately score, segment, and classify gig workers into varying financial risk categories."
+    },
+    {
+      title: "Hypothesis Testing",
+      diff: "Medium", type: "Statistics", diffClass: "diff-medium",
+      chips: ["T-Test", "ANOVA", "P-Values"],
+      desc: "Mathematically validate core business assumptions using rigorous statistical tests, significance thresholds, and p-value evaluation."
+    },
+    {
+      title: "ML Model Training",
+      diff: "Hard", type: "Machine Learning", diffClass: "diff-hard",
+      chips: ["Scikit-Learn", "Regression", "Classification"],
+      desc: "Train robust predictive models utilizing multiple machine learning algorithms to forecast worker income capability or job stability."
+    },
+    {
+      title: "Model Optimization",
+      diff: "Hard", type: "Machine Learning", diffClass: "diff-hard",
+      chips: ["GridSearchCV", "Hyperparameters", "Cross-Validation"],
+      desc: "Systematically compare trained models against each other, tune hyperparameters, and programmatically select the best performing architecture."
+    },
+    {
+      title: "Live Prediction Engine",
+      diff: "Medium", type: "Deployment", diffClass: "diff-medium",
+      chips: ["Flask/FastAPI", "Pickle", "REST API"],
+      desc: "Serve the optimized ML model via a clean REST API interface to generate real-time outcome predictions based on live user inputs."
+    },
+    {
+      title: "Forecasting Engine",
+      diff: "Medium", type: "Machine Learning", diffClass: "diff-medium",
+      chips: ["ARIMA", "Prophet", "Future Trends"],
+      desc: "Implement advanced time-series forecasting models to project future income trends and market volume for the upcoming quarters."
+    },
+    {
+      title: "Advanced Filter Engine",
+      diff: "Easy", type: "Interactive UI", diffClass: "diff-easy",
+      chips: ["Dynamic Queries", "Pandas Filtering", "Dash"],
+      desc: "Provide a highly responsive, interactive UI layer that allows stakeholders to dynamically query, sort, and explore the entire dataset."
+    },
+    {
+      title: "What-If Simulation Engine",
+      diff: "Hard", type: "Simulation", diffClass: "diff-hard",
+      chips: ["Scenario Modeling", "Impact Analysis", "Parameters"],
+      desc: "A powerful sandbox environment to simulate hypothetical business decisions and quantitatively analyze their downstream impact on gig outcomes."
+    }
+  ];
+
+  const grid = document.getElementById("featureGrid");
+
+  // Render Features Loop
+  features.forEach((f, i) => {
+    const num = String(i + 1).padStart(2, "0");
+    const diffFilter = f.diff.toLowerCase();
+    
+    const cardHTML = `
+      <div class="card-item" data-diff="${diffFilter}" onclick="openModal(${i})">
+        <div class="card">
+          <div class="card-top">
+            <div class="feature-number">${num}</div>
+            <span class="difficulty-badge ${f.diffClass}">${f.diff}</span>
+          </div>
+          <h3>${f.title}</h3>
+          <p>${f.desc}</p>
+          <div class="divider"></div>
+          <div class="card-footer">
+            <span class="card-type">${f.type}</span>
+            <div class="arrow-btn">&#8594;</div>
+          </div>
+        </div>
+      </div>
+    `;
+    grid.insertAdjacentHTML('beforeend', cardHTML);
+  });
+
+  // Modal Logic
+  function openModal(i) {
+    const f = features[i];
+    document.getElementById('modalTitle').textContent = f.title;
+    document.getElementById('modalMeta').textContent = f.type + '  ·  Difficulty: ' + f.diff;
+    document.getElementById('modalDesc').textContent = f.desc;
+    
+    const chipsEl = document.getElementById('modalChips');
+    chipsEl.innerHTML = f.chips.map(c => `<span class="meta-chip">${c}</span>`).join('');
+    
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function closeModalOnBg(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  // Filtering Logic
+  function filterCards(diff, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    document.querySelectorAll('.card-item').forEach(card => {
+      if (diff === 'all' || card.dataset.diff === diff) {
+        card.classList.remove('hidden');
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+  }
+</script>
+</body>
+</html>

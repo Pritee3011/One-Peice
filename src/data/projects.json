@@ -1,0 +1,84 @@
+[
+  {
+    "id": 1,
+    "name": "SenseHire",
+    "tagline": "Build the future of inclusive hiring",
+    "description": "SenseHire removes barriers between talented people with disabilities and the jobs they deserve. ",
+    "techStack": ["Javascript", "API", "AI", "React"],
+    "problemStatement": "Your mission: implement features that make hiring truly accessible — fast, clean, and fair.",
+    "featuresLink": "/SenseHire.html",
+    "contributionGuidelines": "We welcome contributions in ML model improvements, UI/UX enhancements, and API integrations. Check the `CONTRIBUTING.md` for setup instructions. Good first issues are tagged `good-first-issue` on GitHub.",
+    "github": "https://github.com/commitverse2026/Employment_sensehire",
+    "difficulty": "Employment",
+    "stars" :""
+  }, 
+  
+  {
+    "id": 2,
+    "name": "RasaVeda",
+    "tagline": "Preserve the Knowledge of Flavours",
+    "description": "India has thousands of regional cuisines, traditional recipes, cooking techniques and culinary histories — but most of it exists only in memory, passed down orally through generations. RasaVeda is an open-source, community-driven web platform that documents, explores and celebrates India's culinary heritage across states, communities, languages and generations. From endangered recipes to festival foods, from spice guides to chef spotlights — RasaVeda makes India's food culture searchable, shareable and preserved for the future.",
+    "techStack": ["React", "Node.js", "Express"],
+    "problemStatement": "India's rich and diverse food culture — spanning thousands of regional cuisines, traditional recipes, cooking techniques, festivals and culinary histories — remains largely undocumented, fragmented and inaccessible in a structured digital form. There is no unified open-source platform that captures, preserves and celebrates the depth of Indian food culture across its states, communities, languages and generations. Your mission: implement features that document, explore and promote India's culinary heritage in an inclusive, interactive and multilingual way.",
+    "featuresLink": "/rasaveda-features.html",
+    "contributionGuidelines": "Each team is assigned a specific feature folder inside src/features/. Implement your feature inside index.js and style it in styles.css. Use the pre-configured api.js to call the backend. Never edit App.js or api.js. Submit one feature per Pull Request with branch name feat/feature-name. Good first issues are tagged good-first-issue on GitHub.",
+    "github": "https://github.com/commitverse2026/Culture-RasaVeda",
+    "difficulty": "Culture",
+    "stars": ""
+  },
+  {
+  "id": 3,
+  "name": "VastraVeda",
+  "tagline": "Wear the Story of India",
+  "description": "India's textile traditions are among the richest in the world — Kanjivaram silk, Phulkari embroidery, Bandhani tie-dye, Kashmiri Pheran — yet most of this heritage remains undocumented, fragmented and at risk of being forgotten. VastraVeda is an open-source, community-driven desktop application built in Java that documents, explores and preserves India's traditional clothing and textile culture across regions, communities, fabrics and generations. From endangered textiles to artisan spotlights, from embroidery guides to festival attire — VastraVeda brings India's sartorial story into a unified desktop experience built entirely in pure Java.",
+  "techStack": ["Java", "Java Swing", "JDBC"],
+  "problemStatement": "India's diverse textile traditions — spanning handlooms, embroidery styles, regional costumes and fabric origins across states — are largely undocumented in a unified digital space. There is no community-driven platform that helps people identify, explore and preserve India's clothing culture across regions, communities and generations. Your mission: implement features that document and celebrate India's traditional clothing heritage through an accessible, structured and community-powered Java desktop application.",
+  "featuresLink": "/vastraveda-features.html",
+  "contributionGuidelines": "Each team is assigned a specific feature panel inside the src/main/java/com/vastraveda/panels/ folder. Implement your feature's UI using Java Swing components inside your assigned panel class. Add the required data-fetching logic in the corresponding DAO class inside src/main/java/com/vastraveda/dao/. Never edit DatabaseConnection.java or MainFrame.java. Submit one feature per Pull Request with branch name feat/feature-name. Good first issues are tagged good-first-issue on GitHub.",
+  "github": "https://github.com/commitverse2026/Culture-VastraVeda",
+  "difficulty": "Culture",
+  "stars": ""
+},
+{
+  "id": 4,
+  "name": "GigSarthi",
+  "tagline": "Uncover the hidden reality of gig workers",
+  "description": "GigSarthi is a data-driven platform that reveals the unseen challenges of gig workers — from unstable income to burnout risks. Participants will work with messy, real-world datasets to clean, analyze, and build intelligent systems that uncover patterns, predict risks, and generate actionable insights.",
+  "techStack": ["React", "Node.js", "Python", "Machine Learning", "Data Analysis"],
+  "problemStatement": "Your mission: Transform chaotic gig worker data into a meaningful system. Clean the data, extract insights, build predictive models, and design an interactive dashboard that highlights worker stability, income patterns, and risk levels.",
+  "contributionGuidelines": "Participants must fork the repository and build their solution step-by-step. Focus on data cleaning, feature engineering, model building, and UI integration. Avoid hardcoding results. Ensure your pipeline is reproducible. Follow the feature guide and complete all stages to unlock the full system.",
+   "featuresLink": "/GigSarthi-features.html",
+  "github": "https://github.com/commitverse2026/Employment_GigSarthi",
+  "difficulty": "Employment",
+  "stars": ""
+},
+  {
+  "id": 5,
+  "name": "AgriVault",
+  "tagline": "Offline-first financial system for rural cooperatives",
+  "description": "AgriVault is a resilient financial utility designed for agricultural cooperatives operating in low-connectivity zones. It enables farmers to log expenses, manage seed distributions, and track collective funds even without internet access. Participants will transform a stateless UI into a robust, secure, and offline-first system with intelligent syncing capabilities.",
+  "techStack": ["Kotlin", "Jetpack Compose", "Room Database", "WorkManager", "MongoDB Atlas", "Hilt"],
+  "problemStatement": "Your mission: Turn a stateless application into a reliable financial system. Fix critical logical flaws, implement local persistence using Room, design secure data validation, and build a smart sync mechanism that updates the cloud only when stable connectivity is available.",
+  "featuresLink": "/AgriVault.html",
+  "contributionGuidelines": "Participants must identify and fix logical errors in the existing codebase before implementing new features. Focus on data persistence, offline-first architecture, and secure validation. Ensure synchronization is efficient and only triggered under valid network conditions. Follow clean architecture practices and maintain modular, testable code.",
+  "github": "https://github.com/commitverse2026/AgriVault-Dashboard",
+  "difficulty": "Finance",
+  "stars": ""
+},
+{
+  
+  "id": 6,
+  "name": "EquiLend AI",
+  "tagline": "Fair credit scoring for the credit invisible",
+  "description": "EquiLend AI is an open-source machine learning challenge focused on redefining credit scoring using alternative data sources. Instead of relying solely on traditional banking history, this system evaluates financial behavior through utility payments, cash flow patterns, and digital activity. Participants will transform a flawed prototype into a robust, fair, and explainable ML system.",
+  "techStack": ["Python", "Streamlit", "Scikit-learn", "XGBoost", "SHAP", "MongoDB"],
+  "problemStatement": "Your mission: Replace a flawed rule-based system with a reliable ML pipeline. Fix logical errors, train a predictive model, ensure fairness using bias detection metrics, and build a transparent system that explains every lending decision.",
+  "featuresLink": "/equilend.html",
+  "contributionGuidelines": "Participants must first identify and fix logical flaws in the starter code before implementing the ML pipeline. Focus on feature engineering, model performance, fairness evaluation, and explainability. Ensure all predictions are auditable by storing results in MongoDB. Avoid black-box solutions—transparency and fairness are key evaluation criteria.",
+  "github": "https://github.com/commitverse2026/EquilendAI",
+  "difficulty": "Finance",
+  "stars": ""
+} 
+
+  
+]

@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EquiLend AI – Feature Set</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --void: #080B12;
+      --deep: #0D1117;
+      --surface: #161B27;
+      --card: #1C2333;
+      --border: #2A3142;
+      --dim: #8892A4;
+      --text: #C9D1E0;
+      --bright: #E8EDF5;
+      --accent: #10B981; /* Shifted to Emerald for Finance theme */
+      --accent-glow: #34D399;
+      --emerald: #10B981;
+      --amber: #F59E0B;
+      --rose: #F43F5E;
+      --purple: #8B5CF6;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--void);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--deep); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* Grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(16,185,129,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(16,185,129,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      text-align: center;
+      padding: 72px 0 56px;
+      position: relative;
+    }
+
+    header::after {
+      content: '';
+      display: block;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(16,185,129,0.4), transparent);
+      margin-top: 48px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--dim);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 8px;
+      margin-bottom: 32px;
+      transition: all 0.2s;
+    }
+    .back-btn:hover { color: var(--accent); border-color: var(--accent); background: rgba(16,185,129,0.05); }
+
+    .tag {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.2);
+      padding: 4px 12px;
+      border-radius: 999px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 800;
+      color: var(--bright);
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    h1 span {
+      background: linear-gradient(135deg, #34D399, #10B981, #059669);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      color: var(--dim);
+      font-size: 1rem;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── STATS ROW ── */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin: 40px 0 0;
+      flex-wrap: wrap;
+    }
+
+    .stat { text-align: center; }
+    .stat-value { font-weight: 700; font-size: 1.5rem; color: var(--bright); }
+    .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; }
+
+    /* ── FILTER TABS ── */
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    .filter-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 7px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--dim);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(16,185,129,0.08);
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 0 12px rgba(16,185,129,0.3);
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 20px;
+    }
+
+    /* ── GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background-image: linear-gradient(135deg, rgba(16,185,129,0.03) 0%, transparent 60%);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(16,185,129,0.5), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .card:hover {
+      border-color: rgba(16,185,129,0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 0 0 1px rgba(16,185,129,0.15), 0 12px 40px rgba(0,0,0,0.5), 0 0 60px rgba(16,185,129,0.06);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .feature-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.2);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-weight: 700;
+    }
+
+    .difficulty-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .difficulty-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .diff-easy {
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.25);
+      color: var(--emerald);
+    }
+    .diff-easy::before { background: var(--emerald); }
+
+    .diff-medium {
+      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(245,158,11,0.25);
+      color: var(--amber);
+    }
+    .diff-medium::before { background: var(--amber); }
+
+    .diff-hard {
+      background: rgba(244,63,94,0.1);
+      border: 1px solid rgba(244,63,94,0.25);
+      color: var(--rose);
+    }
+    .diff-hard::before { background: var(--rose); }
+
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--bright);
+      line-height: 1.3;
+      transition: color 0.2s;
+    }
+
+    .card:hover h3 { color: var(--accent-glow); }
+
+    .card p {
+      font-size: 0.85rem;
+      color: var(--dim);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(16,185,129,0.2), transparent);
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-type {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .arrow-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .card:hover .arrow-btn {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(8,11,18,0.85);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 88vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 80px rgba(0,0,0,0.8);
+      transform: translateY(20px);
+      transition: transform 0.3s;
+    }
+
+    .modal-overlay.open .modal { transform: translateY(0); }
+
+    .modal-header {
+      padding: 24px 24px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .modal-header h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--bright);
+    }
+
+    .modal-header p {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--dim);
+      margin-top: 4px;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--dim);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .close-btn:hover { color: var(--bright); border-color: var(--accent); }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-body p {
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .modal-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .meta-chip {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      color: var(--dim);
+      background: var(--deep);
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .close-full-btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--dim);
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .close-full-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(16,185,129,0.05); }
+
+    /* ── HIDDEN class for filter ── */
+    .card-item.hidden { display: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: 1fr; }
+      h1 { font-size: 2rem; }
+      .stats { gap: 24px; }
+    }
+
+    /* fade-in animation */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .card-item { animation: fadeUp 0.5s ease forwards; }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <header>
+    <a href="/" target="_top" class="back-btn">&#8592; Back to CommitVerse</a>
+    <div class="tag">&#10022; Feature Set 1 (AI/ML)</div>
+    <h1>EquiLend <span>AI</span></h1>
+    <p class="subtitle">Transparent Credit Scoring — 15 AI/ML tasks to build a fair, predictive, and unbiased loan approval engine using alternative data.</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-value">15</div><div class="stat-label">Features</div></div>
+      <div class="stat"><div class="stat-value">6</div><div class="stat-label">Easy</div></div>
+      <div class="stat"><div class="stat-value">7</div><div class="stat-label">Medium</div></div>
+      <div class="stat"><div class="stat-value">2</div><div class="stat-label">Hard</div></div>
+    </div>
+  </header>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterCards('all', this)">All 15</button>
+    <button class="filter-btn" onclick="filterCards('easy', this)">Easy 6</button>
+    <button class="filter-btn" onclick="filterCards('medium', this)">Medium 7</button>
+    <button class="filter-btn" onclick="filterCards('hard', this)">Hard 2</button>
+  </div>
+
+  <p class="section-label">// click any card to read full details</p>
+
+  <div class="grid" id="featureGrid">
+
+    <div class="card-item" data-diff="easy" onclick="openModal(0)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">01</div>
+          <span class="difficulty-badge diff-easy">Easy</span>
+        </div>
+        <h3>MongoDB Data Ingestion</h3>
+        <p>Develop a Python script to ingest raw utility data from MongoDB Atlas securely and efficiently.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Data Eng</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="medium" onclick="openModal(1)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">02</div>
+          <span class="difficulty-badge diff-medium">Medium</span>
+        </div>
+        <h3>Feature Engineering Pipeline</h3>
+        <p>Calculate key metrics like the ratio of income to utility bills to assess financial stability.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Data Science</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="medium" onclick="openModal(2)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">03</div>
+          <span class="difficulty-badge diff-medium">Medium</span>
+        </div>
+        <h3>Iterative Imputation</h3>
+        <p>Implement IterativeImputer to handle missing alternative data points intelligently without dropping records.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">ML Prep</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="easy" onclick="openModal(3)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">04</div>
+          <span class="difficulty-badge diff-easy">Easy</span>
+        </div>
+        <h3>Scaling & Encoding Pipeline</h3>
+        <p>Build a robust scikit-learn Pipeline for scaling numeric features (StandardScaler) and encoding variables.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">ML Prep</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="easy" onclick="openModal(4)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">05</div>
+          <span class="difficulty-badge diff-easy">Easy</span>
+        </div>
+        <h3>Baseline Random Forest</h3>
+        <p>Train a baseline Random Forest model for risk classification to establish a minimum performance benchmark.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Modeling</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="hard" onclick="openModal(5)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">06</div>
+          <span class="difficulty-badge diff-hard">Hard</span>
+        </div>
+        <h3>XGBoost/LightGBM Optimization</h3>
+        <p>Train and hyperparameter-tune an optimized XGBoost or LightGBM model to achieve higher AUC.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Modeling</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="medium" onclick="openModal(6)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">07</div>
+          <span class="difficulty-badge diff-medium">Medium</span>
+        </div>
+        <h3>SMOTE Integration</h3>
+        <p>Apply SMOTE to address the "low default rate" class imbalance in the dataset.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">ML Prep</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="medium" onclick="openModal(7)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">08</div>
+          <span class="difficulty-badge diff-medium">Medium</span>
+        </div>
+        <h3>SHAP Explainer</h3>
+        <p>Integrate SHAP to explain individual prediction outcomes, ensuring transparent decisions.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">XAI</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="medium" onclick="openModal(8)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">09</div>
+          <span class="difficulty-badge diff-medium">Medium</span>
+        </div>
+        <h3>Bias Detection Script</h3>
+        <p>Build a script calculating the Disparate Impact Ratio to ensure non-discrimination against protected classes.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Ethics</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="easy" onclick="openModal(9)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">10</div>
+          <span class="difficulty-badge diff-easy">Easy</span>
+        </div>
+        <h3>Joblib Model Export</h3>
+        <p>Export the trained and finalized model using joblib for high-performance, low-latency loading.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">MLOps</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="easy" onclick="openModal(10)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">11</div>
+          <span class="difficulty-badge diff-easy">Easy</span>
+        </div>
+        <h3>Model Versioning System</h3>
+        <p>Create a structured Model Versioning system (e.g., v1_base, v2_tuned) to track iterations safely.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">MLOps</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="medium" onclick="openModal(11)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">12</div>
+          <span class="difficulty-badge diff-medium">Medium</span>
+        </div>
+        <h3>Preprocessing Unit Tests</h3>
+        <p>Implement Unit Tests for all data cleaning and preprocessing functions to prevent broken pipelines.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Testing</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="hard" onclick="openModal(12)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">13</div>
+          <span class="difficulty-badge diff-hard">Hard</span>
+        </div>
+        <h3>Threshold Optimizer</h3>
+        <p>Build a Threshold Optimizer to empirically find the best probability cut-off point for "Approved".</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Data Science</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="easy" onclick="openModal(13)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">14</div>
+          <span class="difficulty-badge diff-easy">Easy</span>
+        </div>
+        <h3>Mock Data Generator</h3>
+        <p>Write a generator script using Faker to create edge-case credit profiles for robust testing.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Testing</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="medium" onclick="openModal(14)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">15</div>
+          <span class="difficulty-badge diff-medium">Medium</span>
+        </div>
+        <h3>Fairness Report Generator</h3>
+        <p>Create a script that generates an automated Fairness Report in HTML/Markdown summarizing bias metrics.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Reporting</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+  </div></div><div class="modal-overlay" id="modalOverlay" onclick="closeModalOnBg(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h2 id="modalTitle"></h2>
+        <p id="modalMeta"></p>
+      </div>
+      <button class="close-btn" onclick="closeModal()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-meta" id="modalChips"></div>
+      <p id="modalDesc"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="close-full-btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const features = [
+    {
+      title: "MongoDB Data Ingestion",
+      diff: "Easy", type: "Data Eng",
+      chips: ["PyMongo", "Atlas", "Data Parsing", "Security"],
+      desc: "Develop a robust Python script to ingest raw utility data from MongoDB Atlas. Ensure the connection is securely established using environment variables, and map the incoming BSON documents into structured Pandas DataFrames. Handle timeout errors and pagination gracefully."
+    },
+    {
+      title: "Feature Engineering Pipeline",
+      diff: "Medium", type: "Data Science",
+      chips: ["Pandas", "Math Ratios", "Financial Logic", "Vectorization"],
+      desc: "Perform extensive Feature Engineering to extract meaningful signals from raw alternative data. Specifically, calculate the ratio of monthly income to average utility bills, determine cash-flow consistency over 6 months, and create categorical bins for different expense brackets."
+    },
+    {
+      title: "Iterative Imputation",
+      diff: "Medium", type: "ML Prep",
+      chips: ["IterativeImputer", "Scikit-Learn", "Missing Data", "Statistics"],
+      desc: "Implement IterativeImputer from scikit-learn to handle missing alternative data points (like gaps in payment history). Model each feature with missing values as a function of other features, intelligently filling blanks without dropping valuable applicant records."
+    },
+    {
+      title: "Scaling & Encoding Pipeline",
+      diff: "Easy", type: "ML Prep",
+      chips: ["StandardScaler", "OneHotEncoder", "ColumnTransformer", "Pipeline"],
+      desc: "Build a seamless scikit-learn Pipeline incorporating a ColumnTransformer. Apply StandardScaler to normalize high-variance numeric features (like income) and OneHotEncoder to transform categorical variables (like employment type) into machine-readable formats."
+    },
+    {
+      title: "Baseline Random Forest",
+      diff: "Easy", type: "Modeling",
+      chips: ["RandomForestClassifier", "Baseline", "Fit/Predict", "Metrics"],
+      desc: "Train a baseline Random Forest model for risk classification. Establish a minimum performance benchmark by evaluating the default accuracy, precision, and recall. This baseline will be used to measure the success of more complex algorithms later."
+    },
+    {
+      title: "XGBoost/LightGBM Optimization",
+      diff: "Hard", type: "Modeling",
+      chips: ["XGBoost", "LightGBM", "Hyperparameter Tuning", "GridSearchCV"],
+      desc: "Train an advanced gradient boosting model using XGBoost or LightGBM. Utilize GridSearchCV or RandomizedSearchCV to deeply tune hyperparameters (learning rate, max depth, estimators) to maximize the Area Under the ROC Curve (AUC) and reduce false positives."
+    },
+    {
+      title: "SMOTE Integration",
+      diff: "Medium", type: "ML Prep",
+      chips: ["Imbalanced-Learn", "SMOTE", "Synthetic Data", "Oversampling"],
+      desc: "Apply SMOTE (Synthetic Minority Over-sampling Technique) strictly to the training dataset. Address the 'low default rate' class imbalance by generating synthetic examples of high-risk applicants, ensuring the model doesn't become biased towards predicting 'Approved' universally."
+    },
+    {
+      title: "SHAP Explainer",
+      diff: "Medium", type: "XAI",
+      chips: ["SHAP", "Explainable AI", "Feature Importance", "Transparency"],
+      desc: "Integrate the SHAP (SHapley Additive exPlanations) library to interpret the optimized model. Generate waterfall plots for individual prediction outcomes to clearly explain to loan officers exactly which alternative data features drove the AI's approval or rejection decision."
+    },
+    {
+      title: "Bias Detection Script",
+      diff: "Medium", type: "Ethics",
+      chips: ["Disparate Impact", "Fairness", "Aequitas", "Protected Classes"],
+      desc: "Build a Bias Detection script calculating the Disparate Impact Ratio. Analyze the model's predictions across protected demographic groups (e.g., age, location) to mathematically ensure the algorithm is not systematically discriminating or reflecting historical biases."
+    },
+    {
+      title: "Joblib Model Export",
+      diff: "Easy", type: "MLOps",
+      chips: ["Joblib", "Serialization", "Inference", "Optimization"],
+      desc: "Export the trained, finalized model and the complete preprocessing pipeline using joblib. Ensure the serialized file is optimized for high-performance, low-latency loading when integrated into the production FastAPI or Streamlit backend."
+    },
+    {
+      title: "Model Versioning System",
+      diff: "Easy", type: "MLOps",
+      chips: ["File Management", "Metadata", "Rollbacks", "Tracking"],
+      desc: "Create a structured Model Versioning system. Automatically save model files with timestamped or semantic version tags (e.g., v1_base, v2_tuned). Include a JSON metadata file tracking the hyperparameters, training date, and accuracy metrics for each specific version."
+    },
+    {
+      title: "Preprocessing Unit Tests",
+      diff: "Medium", type: "Testing",
+      chips: ["Pytest", "Assertions", "Mock Data", "CI/CD"],
+      desc: "Implement comprehensive Unit Tests using pytest for all data cleaning and feature engineering functions. Ensure extreme edge cases (like negative incomes or infinite ratios) are handled gracefully without crashing the production pipeline."
+    },
+    {
+      title: "Threshold Optimizer",
+      diff: "Hard", type: "Data Science",
+      chips: ["Precision-Recall", "F1-Score", "Probability", "Business Logic"],
+      desc: "Build a custom Threshold Optimizer script. Instead of relying on the default 0.5 probability cutoff, plot the Precision-Recall curve to empirically calculate the optimal classification threshold that balances risk tolerance with business approval goals."
+    },
+    {
+      title: "Mock Data Generator",
+      diff: "Easy", type: "Testing",
+      chips: ["Faker Library", "Synthetic Data", "Edge Cases", "Data Scenarios"],
+      desc: "Write a Mock Data Generator script using the Python Faker library. Generate synthetic but highly realistic alternative credit profiles, deliberately crafting edge-case scenarios (e.g., extremely high utility bills but zero recorded income) for system stress-testing."
+    },
+    {
+      title: "Fairness Report Generator",
+      diff: "Medium", type: "Reporting",
+      chips: ["Markdown", "HTML Generation", "Automated Reporting", "Audit"],
+      desc: "Create a Python script that automatically compiles a Fairness Report in Markdown or HTML format. The report should ingest model metrics, display the Disparate Impact Ratio, embed SHAP summary plots, and output a human-readable compliance document for auditors."
+    }
+  ];
+
+  function openModal(i) {
+    const f = features[i];
+    document.getElementById('modalTitle').textContent = f.title;
+    document.getElementById('modalMeta').textContent = f.type + '  ·  Difficulty: ' + f.diff;
+    document.getElementById('modalDesc').textContent = f.desc;
+    const chipsEl = document.getElementById('modalChips');
+    chipsEl.innerHTML = f.chips.map(c => `<span class="meta-chip">${c}</span>`).join('');
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function closeModalOnBg(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  function filterCards(diff, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.card-item').forEach(card => {
+      if (diff === 'all' || card.dataset.diff === diff) {
+        card.classList.remove('hidden');
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+  }
+</script>
+</body>
+</html>

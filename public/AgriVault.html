@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AgriVault – Feature Set</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --void: #080B12;
+      --deep: #0D1117;
+      --surface: #161B27;
+      --card: #1C2333;
+      --border: #2A3142;
+      --dim: #8892A4;
+      --text: #C9D1E0;
+      --bright: #E8EDF5;
+      --accent: #F59E0B; /* Harvest Amber */
+      --accent-glow: #FBBF24;
+      --emerald: #10B981;
+      --amber: #F59E0B;
+      --rose: #F43F5E;
+      --purple: #8B5CF6;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--void);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--deep); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* Grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(245,158,11,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(245,158,11,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      text-align: center;
+      padding: 72px 0 56px;
+      position: relative;
+    }
+
+    header::after {
+      content: '';
+      display: block;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(245,158,11,0.4), transparent);
+      margin-top: 48px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--dim);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 8px;
+      margin-bottom: 32px;
+      transition: all 0.2s;
+    }
+    .back-btn:hover { color: var(--accent); border-color: var(--accent); background: rgba(245,158,11,0.05); }
+
+    .tag {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(245,158,11,0.2);
+      padding: 4px 12px;
+      border-radius: 999px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 800;
+      color: var(--bright);
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    h1 span {
+      background: linear-gradient(135deg, #FCD34D, #F59E0B, #B45309);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      color: var(--dim);
+      font-size: 1rem;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── STATS ROW ── */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin: 40px 0 0;
+      flex-wrap: wrap;
+    }
+
+    .stat { text-align: center; }
+    .stat-value { font-weight: 700; font-size: 1.5rem; color: var(--bright); }
+    .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; }
+
+    /* ── FILTER TABS ── */
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    .filter-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 7px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--dim);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(245,158,11,0.08);
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      color: #111; /* Dark text for contrast against amber */
+      box-shadow: 0 0 12px rgba(245,158,11,0.3);
+      font-weight: bold;
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 20px;
+    }
+
+    /* ── GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background-image: linear-gradient(135deg, rgba(245,158,11,0.03) 0%, transparent 60%);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(245,158,11,0.5), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .card:hover {
+      border-color: rgba(245,158,11,0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 0 0 1px rgba(245,158,11,0.15), 0 12px 40px rgba(0,0,0,0.5), 0 0 60px rgba(245,158,11,0.06);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .feature-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(245,158,11,0.2);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-weight: 700;
+    }
+
+    .difficulty-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .difficulty-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .diff-easy {
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.25);
+      color: var(--emerald);
+    }
+    .diff-easy::before { background: var(--emerald); }
+
+    .diff-medium {
+      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(245,158,11,0.25);
+      color: var(--amber);
+    }
+    .diff-medium::before { background: var(--amber); }
+
+    .diff-hard {
+      background: rgba(244,63,94,0.1);
+      border: 1px solid rgba(244,63,94,0.25);
+      color: var(--rose);
+    }
+    .diff-hard::before { background: var(--rose); }
+
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--bright);
+      line-height: 1.3;
+      transition: color 0.2s;
+    }
+
+    .card:hover h3 { color: var(--accent-glow); }
+
+    .card p {
+      font-size: 0.85rem;
+      color: var(--dim);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(245,158,11,0.2), transparent);
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-type {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .arrow-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(245,158,11,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .card:hover .arrow-btn {
+      background: var(--accent);
+      color: #111;
+      border-color: var(--accent);
+    }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(8,11,18,0.85);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 88vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 80px rgba(0,0,0,0.8);
+      transform: translateY(20px);
+      transition: transform 0.3s;
+    }
+
+    .modal-overlay.open .modal { transform: translateY(0); }
+
+    .modal-header {
+      padding: 24px 24px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .modal-header h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--bright);
+    }
+
+    .modal-header p {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--dim);
+      margin-top: 4px;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--dim);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .close-btn:hover { color: var(--bright); border-color: var(--accent); }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-body p {
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .modal-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .meta-chip {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      color: var(--dim);
+      background: var(--deep);
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .close-full-btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--dim);
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .close-full-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(245,158,11,0.05); }
+
+    /* ── HIDDEN class for filter ── */
+    .card-item.hidden { display: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: 1fr; }
+      h1 { font-size: 2rem; }
+      .stats { gap: 24px; }
+    }
+
+    /* fade-in animation */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .card-item { animation: fadeUp 0.5s ease forwards; }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <header>
+    <a href="/" target="_top" class="back-btn">&#8592; Back to CommitVerse</a>
+    <div class="tag">&#10022; Feature Set 1 (Android)</div>
+    <h1>Agri<span>Vault</span></h1>
+    <p class="subtitle">Offline-First Agricultural Finance — 15 Android tasks to build a robust local ledger and UI for rural cooperatives.</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-value">15</div><div class="stat-label">Features</div></div>
+      <div class="stat"><div class="stat-value">5</div><div class="stat-label">Easy</div></div>
+      <div class="stat"><div class="stat-value">7</div><div class="stat-label">Medium</div></div>
+      <div class="stat"><div class="stat-value">3</div><div class="stat-label">Hard</div></div>
+    </div>
+  </header>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterCards('all', this)">All 15</button>
+    <button class="filter-btn" onclick="filterCards('easy', this)">Easy 5</button>
+    <button class="filter-btn" onclick="filterCards('medium', this)">Medium 7</button>
+    <button class="filter-btn" onclick="filterCards('hard', this)">Hard 3</button>
+  </div>
+
+  <p class="section-label">// click any card to read full details</p>
+
+  <div class="grid" id="featureGrid">
+
+    <div class="card-item" data-diff="easy" onclick="openModal(0)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">01</div>
+          <span class="difficulty-badge diff-easy">Easy</span>
+        </div>
+        <h3>Compose & M3 Setup</h3>
+        <p>Initialize a modern Jetpack Compose project integrating Material Design 3 guidelines.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Setup</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="easy" onclick="openModal(1)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">02</div>
+          <span class="difficulty-badge diff-easy">Easy</span>
+        </div>
+        <h3>Room Entities</h3>
+        <p>Define local SQLite schemas for Transaction and AgriculturalCategory using Room annotations.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Database</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="medium" onclick="openModal(2)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">03</div>
+          <span class="difficulty-badge diff-medium">Medium</span>
+        </div>
+        <h3>Data Access Objects</h3>
+        <p>Create robust DAOs handling efficient CRUD operations (Insert, Update, Delete, Query).</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Database</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="medium" onclick="openModal(3)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">04</div>
+          <span class="difficulty-badge diff-medium">Medium</span>
+        </div>
+        <h3>Repository & Flow</h3>
+        <p>Implement the Repository pattern to expose reactive data streams via Kotlin Flow.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Architecture</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="hard" onclick="openModal(4)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">05</div>
+          <span class="difficulty-badge diff-hard">Hard</span>
+        </div>
+        <h3>Transaction Screen UI</h3>
+        <p>Build a Transaction Entry Screen featuring a fully custom-built numeric keyboard for currency input.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">UI Design</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="medium" onclick="openModal(5)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">06</div>
+          <span class="difficulty-badge diff-medium">Medium</span>
+        </div>
+        <h3>Dashboard & Day-Grouping</h3>
+        <p>Design a Main Dashboard LazyColumn that dynamically groups and headers transactions by day.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">UI Design</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="easy" onclick="openModal(6)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">07</div>
+          <span class="difficulty-badge diff-easy">Easy</span>
+        </div>
+        <h3>Local Input Validation</h3>
+        <p>Implement rigorous local validation using Regex for amounts and safe boundary checks for date pickers.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Logic</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="hard" onclick="openModal(7)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">08</div>
+          <span class="difficulty-badge diff-hard">Hard</span>
+        </div>
+        <h3>Canvas Pie Chart</h3>
+        <p>Create a custom interactive Pie Chart using Compose Canvas to visualize spending by crop type.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Custom UI</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="medium" onclick="openModal(8)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">09</div>
+          <span class="difficulty-badge diff-medium">Medium</span>
+        </div>
+        <h3>Local Search View</h3>
+        <p>Build a responsive SearchView to filter local transactions dynamically by name or date range.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Logic</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="easy" onclick="openModal(9)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">10</div>
+          <span class="difficulty-badge diff-easy">Easy</span>
+        </div>
+        <h3>Multi-Language Localization</h3>
+        <p>Add robust localization support mapping all string resources across Hindi, Marathi, and English.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Localisation</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="easy" onclick="openModal(10)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">11</div>
+          <span class="difficulty-badge diff-easy">Easy</span>
+        </div>
+        <h3>Dark Mode Support</h3>
+        <p>Implement dynamic Dark Mode theming utilizing Compose's isSystemInDarkTheme() flag.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Theme</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="medium" onclick="openModal(11)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">12</div>
+          <span class="difficulty-badge diff-medium">Medium</span>
+        </div>
+        <h3>Swipe-to-Delete Gesture</h3>
+        <p>Create an intuitive Swipe-to-Delete gesture mechanism for local transaction list items.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Interaction</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="medium" onclick="openModal(12)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">13</div>
+          <span class="difficulty-badge diff-medium">Medium</span>
+        </div>
+        <h3>Export to CSV</h3>
+        <p>Build a secure data export utility utilizing java.io and FileProvider to generate downloadable CSVs.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">File I/O</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="medium" onclick="openModal(13)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">14</div>
+          <span class="difficulty-badge diff-medium">Medium</span>
+        </div>
+        <h3>ViewModel Unit Tests</h3>
+        <p>Implement comprehensive ViewModel Unit Tests employing JUnit 5 and MockK for reliability.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Testing</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-item" data-diff="hard" onclick="openModal(14)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">15</div>
+          <span class="difficulty-badge diff-hard">Hard</span>
+        </div>
+        <h3>Local Backup & Restore</h3>
+        <p>Add a robust Local Backup/Restore feature enabling users to export/import the entire ledger as a JSON file.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">File I/O</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+  </div></div><div class="modal-overlay" id="modalOverlay" onclick="closeModalOnBg(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h2 id="modalTitle"></h2>
+        <p id="modalMeta"></p>
+      </div>
+      <button class="close-btn" onclick="closeModal()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-meta" id="modalChips"></div>
+      <p id="modalDesc"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="close-full-btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const features = [
+    {
+      title: "Compose & M3 Setup",
+      diff: "Easy", type: "Setup",
+      chips: ["Jetpack Compose", "Material 3", "Gradle", "Theme Setup"],
+      desc: "Initialize a modern Android project using Jetpack Compose. Configure the base theme, typography, and color schemes to adhere strictly to Google's Material Design 3 guidelines."
+    },
+    {
+      title: "Room Entities",
+      diff: "Easy", type: "Database",
+      chips: ["Room", "SQLite", "Annotations", "Data Classes"],
+      desc: "Define the local SQLite database schema by creating Kotlin data classes for 'Transaction' and 'AgriculturalCategory'. Annotate them properly with @Entity, @PrimaryKey, and @ColumnInfo."
+    },
+    {
+      title: "Data Access Objects",
+      diff: "Medium", type: "Database",
+      chips: ["DAO", "SQL Queries", "Coroutines", "CRUD"],
+      desc: "Create robust Data Access Objects (DAOs) using Room. Write efficient SQL queries to handle all local CRUD operations, including inserting new expenses, updating records, deleting errors, and fetching sorted lists."
+    },
+    {
+      title: "Repository & Flow",
+      diff: "Medium", type: "Architecture",
+      chips: ["Repository Pattern", "Kotlin Flow", "StateFlow", "MVVM"],
+      desc: "Implement the Repository pattern to decouple the UI from the database. Expose data to the ViewModels via Kotlin Flow, ensuring the UI automatically reacts and updates whenever the underlying database changes."
+    },
+    {
+      title: "Transaction Screen UI",
+      diff: "Hard", type: "UI Design",
+      chips: ["Custom Layout", "State Management", "Input Handling", "Compose UI"],
+      desc: "Build a highly responsive Transaction Entry Screen. Instead of using the default system keyboard, design and implement a custom-built numeric keypad interface tailored specifically for fast, repetitive currency input in the field."
+    },
+    {
+      title: "Dashboard & Day-Grouping",
+      diff: "Medium", type: "UI Design",
+      chips: ["LazyColumn", "Data Grouping", "Sticky Headers", "List UI"],
+      desc: "Design the Main Dashboard using a LazyColumn. Implement business logic to dynamically group incoming transactions by date, and display them using sticky headers (e.g., 'Today', 'Yesterday', 'April 8th')."
+    },
+    {
+      title: "Local Input Validation",
+      diff: "Easy", type: "Logic",
+      chips: ["Regex", "Error States", "Date Pickers", "Sanitization"],
+      desc: "Implement rigorous local input validation before saving data. Use Regex to ensure currency amounts are formatted correctly, and prevent logical errors like selecting future dates for past transactions."
+    },
+    {
+      title: "Canvas Pie Chart",
+      diff: "Hard", type: "Custom UI",
+      chips: ["Canvas API", "Path Drawing", "Trigonometry", "Animations"],
+      desc: "Create a custom interactive Pie Chart entirely from scratch using the Compose Canvas API. Calculate sweep angles dynamically based on expenditure data to visualize spending across different agricultural categories."
+    },
+    {
+      title: "Local Search View",
+      diff: "Medium", type: "Logic",
+      chips: ["TextField", "Filtering logic", "Debounce", "Flow Operators"],
+      desc: "Build a responsive SearchView component at the top of the dashboard. Implement logic in the ViewModel to dynamically filter the active transaction list by name or date range as the user types."
+    },
+    {
+      title: "Multi-Language Localization",
+      diff: "Easy", type: "Localisation",
+      chips: ["strings.xml", "Translations", "Locale", "Resource Files"],
+      desc: "Add robust localization support to the app. Extract all hardcoded text into strings.xml and provide accurate translations for Hindi, Marathi, and English to ensure accessibility for local farmers."
+    },
+    {
+      title: "Dark Mode Support",
+      diff: "Easy", type: "Theme",
+      chips: ["isSystemInDarkTheme", "Color Palettes", "Contrast", "UI Styling"],
+      desc: "Implement dynamic theming. Use the isSystemInDarkTheme() Compose utility to automatically swap out the color palette, ensuring all text, icons, and charts maintain proper contrast in dark environments."
+    },
+    {
+      title: "Swipe-to-Delete Gesture",
+      diff: "Medium", type: "Interaction",
+      chips: ["SwipeToDismiss", "Gestures", "Animations", "Snackbar"],
+      desc: "Implement an intuitive Swipe-to-Delete gesture for the LazyColumn items. Reveal a red trash icon background on swipe, and show a Snackbar with an 'Undo' action immediately after deletion."
+    },
+    {
+      title: "Export to CSV",
+      diff: "Medium", type: "File I/O",
+      chips: ["java.io", "FileProvider", "Intents", "Data Formatting"],
+      desc: "Build a utility to query the entire Room database and format the data into a comma-separated values (CSV) string. Use java.io and Android FileProvider to save the file locally and trigger a native share intent."
+    },
+    {
+      title: "ViewModel Unit Tests",
+      diff: "Medium", type: "Testing",
+      chips: ["JUnit 5", "MockK", "Coroutines Test", "Assertions"],
+      desc: "Implement comprehensive unit tests for the application's ViewModels. Use JUnit 5 and MockK to mock the repository layer and verify that state changes occur correctly in response to specific user actions."
+    },
+    {
+      title: "Local Backup & Restore",
+      diff: "Hard", type: "File I/O",
+      chips: ["JSON Serialization", "Storage Access Framework", "File Read/Write"],
+      desc: "Add a resilient Backup/Restore mechanism. Allow the user to export the entire local SQLite database to a structured JSON file via the Storage Access Framework, and build the logic to parse and safely import that JSON back into the app."
+    }
+  ];
+
+  function openModal(i) {
+    const f = features[i];
+    document.getElementById('modalTitle').textContent = f.title;
+    document.getElementById('modalMeta').textContent = f.type + '  ·  Difficulty: ' + f.diff;
+    document.getElementById('modalDesc').textContent = f.desc;
+    const chipsEl = document.getElementById('modalChips');
+    chipsEl.innerHTML = f.chips.map(c => `<span class="meta-chip">${c}</span>`).join('');
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function closeModalOnBg(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  function filterCards(diff, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.card-item').forEach(card => {
+      if (diff === 'all' || card.dataset.diff === diff) {
+        card.classList.remove('hidden');
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+  }
+</script>
+</body>
+</html>

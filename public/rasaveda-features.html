@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RasaVeda – Feature Set</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --void: #080B12;
+      --deep: #0D1117;
+      --surface: #161B27;
+      --card: #1C2333;
+      --border: #2A3142;
+      --dim: #8892A4;
+      --text: #C9D1E0;
+      --bright: #E8EDF5;
+      --accent: #3B82F6;
+      --accent-glow: #60A5FA;
+      --emerald: #10B981;
+      --amber: #F59E0B;
+      --rose: #F43F5E;
+      --purple: #8B5CF6;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--void);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--deep); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* Grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      text-align: center;
+      padding: 72px 0 56px;
+      position: relative;
+    }
+
+    header::after {
+      content: '';
+      display: block;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(59,130,246,0.4), transparent);
+      margin-top: 48px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--dim);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 8px;
+      margin-bottom: 32px;
+      transition: all 0.2s;
+    }
+    .back-btn:hover { color: var(--accent); border-color: var(--accent); background: rgba(59,130,246,0.05); }
+
+    .tag {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.2);
+      padding: 4px 12px;
+      border-radius: 999px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 800;
+      color: var(--bright);
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    h1 span {
+      background: linear-gradient(135deg, #60A5FA, #818CF8, #A78BFA);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      color: var(--dim);
+      font-size: 1rem;
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── STATS ROW ── */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin: 40px 0 0;
+      flex-wrap: wrap;
+    }
+
+    .stat { text-align: center; }
+    .stat-value { font-weight: 700; font-size: 1.5rem; color: var(--bright); }
+    .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; }
+
+    /* ── FILTER TABS ── */
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    .filter-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 7px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--dim);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(59,130,246,0.08);
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 0 12px rgba(59,130,246,0.3);
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 20px;
+    }
+
+    /* ── GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background-image: linear-gradient(135deg, rgba(59,130,246,0.03) 0%, transparent 60%);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(59,130,246,0.5), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .card:hover {
+      border-color: rgba(59,130,246,0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 0 0 1px rgba(59,130,246,0.15), 0 12px 40px rgba(0,0,0,0.5), 0 0 60px rgba(59,130,246,0.06);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .feature-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.2);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-weight: 700;
+    }
+
+    .difficulty-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .difficulty-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .diff-easy {
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.25);
+      color: var(--emerald);
+    }
+    .diff-easy::before { background: var(--emerald); }
+
+    .diff-medium {
+      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(245,158,11,0.25);
+      color: var(--amber);
+    }
+    .diff-medium::before { background: var(--amber); }
+
+    .diff-hard {
+      background: rgba(244,63,94,0.1);
+      border: 1px solid rgba(244,63,94,0.25);
+      color: var(--rose);
+    }
+    .diff-hard::before { background: var(--rose); }
+
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--bright);
+      line-height: 1.3;
+      transition: color 0.2s;
+    }
+
+    .card:hover h3 { color: var(--accent-glow); }
+
+    .card p {
+      font-size: 0.85rem;
+      color: var(--dim);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(59,130,246,0.2), transparent);
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-type {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .arrow-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .card:hover .arrow-btn {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(8,11,18,0.85);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 88vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 80px rgba(0,0,0,0.8);
+      transform: translateY(20px);
+      transition: transform 0.3s;
+    }
+
+    .modal-overlay.open .modal { transform: translateY(0); }
+
+    .modal-header {
+      padding: 24px 24px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .modal-header h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--bright);
+    }
+
+    .modal-header p {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--dim);
+      margin-top: 4px;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--dim);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .close-btn:hover { color: var(--bright); border-color: var(--accent); }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-body p {
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .modal-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .meta-chip {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      color: var(--dim);
+      background: var(--deep);
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .close-full-btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--dim);
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .close-full-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(59,130,246,0.05); }
+
+    /* ── HIDDEN class for filter ── */
+    .card-item.hidden { display: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: 1fr; }
+      h1 { font-size: 2rem; }
+      .stats { gap: 24px; }
+    }
+
+    /* fade-in animation */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .card-item { animation: fadeUp 0.5s ease forwards; }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header>
+    <a href="/" target="_top" class="back-btn">&#8592; Back to CommitVerse</a>
+    <div class="tag">&#10022; Feature Set 1</div>
+    <h1>Rasa<span>Veda</span></h1>
+    <p class="subtitle">Preserve the Knowledge of Flavours — 15 open design challenges across India's rich culinary heritage.</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-value">15</div><div class="stat-label">Features</div></div>
+      <div class="stat"><div class="stat-value">7</div><div class="stat-label">Easy</div></div>
+      <div class="stat"><div class="stat-value">6</div><div class="stat-label">Medium</div></div>
+      <div class="stat"><div class="stat-value">1</div><div class="stat-label">Hard</div></div>
+    </div>
+  </header>
+
+  <!-- FILTERS -->
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterCards('all', this)">All 15</button>
+    <button class="filter-btn" onclick="filterCards('easy', this)">Easy 7</button>
+    <button class="filter-btn" onclick="filterCards('medium', this)">Medium 6</button>
+    <button class="filter-btn" onclick="filterCards('hard', this)">Hard 1</button>
+  </div>
+
+  <p class="section-label">// click any card to read full details</p>
+
+  <!-- GRID -->
+  <div class="grid" id="featureGrid">
+
+    <!-- 1 -->
+    <div class="card-item" data-diff="easy" onclick="openModal(0)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">01</div>
+          <span class="difficulty-badge diff-easy">Easy</span>
+        </div>
+        <h3>Regional Recipe Encyclopedia</h3>
+        <p>Design a paginated recipe listing page with filter dropdowns for region, community, language and dietary tags. Each recipe opens a detailed view.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">UI Design</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="card-item" data-diff="medium" onclick="openModal(1)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">02</div>
+          <span class="difficulty-badge diff-medium">Medium</span>
+        </div>
+        <h3>Interactive Food Map of India</h3>
+        <p>Design a clickable and hoverable map of India where each state is selectable. When clicked, display a side panel with signature dish cards.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Interactive</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="card-item" data-diff="medium" onclick="openModal(2)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">03</div>
+          <span class="difficulty-badge diff-medium">Medium</span>
+        </div>
+        <h3>Ingredient Origins Tracker</h3>
+        <p>Design an ingredient detail page showing name, origin region, health properties and spice type. Link each ingredient to recipes and highlight on the food map.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Data View</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="card-item" data-diff="easy" onclick="openModal(3)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">04</div>
+          <span class="difficulty-badge diff-easy">Easy</span>
+        </div>
+        <h3>Festival Food Calendar</h3>
+        <p>Design a calendar UI where festival dates are marked. When clicked, display food cards showing traditional dishes associated with that festival and region.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Calendar UI</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="card-item" data-diff="hard" onclick="openModal(4)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">05</div>
+          <span class="difficulty-badge diff-hard">Hard</span>
+        </div>
+        <h3>Cuisine Family Tree</h3>
+        <p>Design an interactive tree visualization showing how regional cuisines across India are connected and evolved. Each node is clickable to explore cuisine details.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Visualization</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="card-item" data-diff="easy" onclick="openModal(5)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">06</div>
+          <span class="difficulty-badge diff-easy">Easy</span>
+        </div>
+        <h3>Street Food Directory</h3>
+        <p>Design a searchable card grid of iconic Indian street foods filterable by region and city. Each card displays the dish name, city of origin and a photo.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Directory</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="card-item" data-diff="medium" onclick="openModal(6)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">07</div>
+          <span class="difficulty-badge diff-medium">Medium</span>
+        </div>
+        <h3>Traditional Cooking Techniques Wiki</h3>
+        <p>Design a wiki-style listing page for traditional Indian cooking techniques. Each technique has its own detail page describing the method and listing related recipes.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Wiki</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8 -->
+    <div class="card-item" data-diff="medium" onclick="openModal(7)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">08</div>
+          <span class="difficulty-badge diff-medium">Medium</span>
+        </div>
+        <h3>Spice Guide & Flavor Profiles</h3>
+        <p>Design a spice explorer UI with cards for each Indian spice showing its flavor profile, health properties, regional usage and the recipes it commonly appears in.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Explorer</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9 -->
+    <div class="card-item" data-diff="medium" onclick="openModal(8)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">09</div>
+          <span class="difficulty-badge diff-medium">Medium</span>
+        </div>
+        <h3>Historical Food Timeline</h3>
+        <p>Design a horizontally scrollable timeline grouping Indian dishes by historical era. Each node shows an era label, dish image and cultural significance.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Timeline</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10 -->
+    <div class="card-item" data-diff="easy" onclick="openModal(9)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">10</div>
+          <span class="difficulty-badge diff-easy">Easy</span>
+        </div>
+        <h3>Forgotten & Endangered Recipes Archive</h3>
+        <p>Design an archive page highlighting recipes at risk of being lost. Add a "Flag as Endangered" button on recipe detail pages so community members can mark rare recipes.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Archive</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11 -->
+    <div class="card-item" data-diff="easy" onclick="openModal(10)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">11</div>
+          <span class="difficulty-badge diff-easy">Easy</span>
+        </div>
+        <h3>Dietary Filter Explorer</h3>
+        <p>Design a multi-select filter bar with options like Jain, Vegan, Sattvic and Gluten-Free. The recipe listing page should reactively update to show matching results.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Filter UI</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12 -->
+    <div class="card-item" data-diff="easy" onclick="openModal(11)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">12</div>
+          <span class="difficulty-badge diff-easy">Easy</span>
+        </div>
+        <h3>Community Food Stories</h3>
+        <p>Design a stories feed showing short personal food memories contributed by community members. Each story links to a dish and includes an author, region and submission form.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Community</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 13 -->
+    <div class="card-item" data-diff="easy" onclick="openModal(12)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">13</div>
+          <span class="difficulty-badge diff-easy">Easy</span>
+        </div>
+        <h3>Multilingual Recipe Support</h3>
+        <p>Add a language selector so users can browse recipes in regional languages like Tamil, Bengali, Marathi and Hindi. Display a language badge on each recipe card.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Localisation</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 14 -->
+    <div class="card-item" data-diff="easy" onclick="openModal(13)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">14</div>
+          <span class="difficulty-badge diff-easy">Easy</span>
+        </div>
+        <h3>Chef & Cook Spotlights</h3>
+        <p>Design a spotlight gallery of home cooks and regional chefs preserving traditional food culture. Each profile page shows their bio, photo and all contributed recipes.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Profiles</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 15 -->
+    <div class="card-item" data-diff="medium" onclick="openModal(14)">
+      <div class="card">
+        <div class="card-top">
+          <div class="feature-number">15</div>
+          <span class="difficulty-badge diff-medium">Medium</span>
+        </div>
+        <h3>Food & Religion Module</h3>
+        <p>Design a religion filter page with category buttons like Hindu, Muslim, Jain and Christian. Each category shows associated recipes and an informational section on food and religion.</p>
+        <div class="divider"></div>
+        <div class="card-footer">
+          <span class="card-type">Filter UI</span>
+          <div class="arrow-btn">&#8594;</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /grid -->
+</div><!-- /wrapper -->
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOnBg(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h2 id="modalTitle"></h2>
+        <p id="modalMeta"></p>
+      </div>
+      <button class="close-btn" onclick="closeModal()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-meta" id="modalChips"></div>
+      <p id="modalDesc"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="close-full-btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const features = [
+    {
+      title: "Regional Recipe Encyclopedia",
+      diff: "Easy", type: "UI Design",
+      chips: ["Pagination", "Filter Dropdowns", "Detail View", "Recipe Cards"],
+      desc: "Design a paginated recipe listing page with filter dropdowns for region, community, language and dietary tags. Each recipe should open a detailed view showing its name, full description, ingredients list and place of origin. The listing page should support both grid and list view modes, with smooth transitions between them. Filters should be stackable and show a live count of matching results."
+    },
+    {
+      title: "Interactive Food Map of India",
+      diff: "Medium", type: "Interactive",
+      chips: ["SVG Map", "State Selection", "Side Panel", "Hover States"],
+      desc: "Design a clickable and hoverable SVG map of India where each state is selectable. When a state is clicked, display a side panel that slides in showing signature dish cards from that region. Hovering a state should highlight it with a soft glow and show a tooltip with the state name. The side panel should include a dish image, name, short description and a link to the full recipe."
+    },
+    {
+      title: "Ingredient Origins Tracker",
+      diff: "Medium", type: "Data View",
+      chips: ["Ingredient Detail", "Origin Map", "Recipe Links", "Health Properties"],
+      desc: "Design an ingredient detail page showing the ingredient's name, origin region, health properties and spice type classification. Each ingredient should link to the recipes it appears in and highlight its origin region on the embedded food map. Include a flavor wheel visualization and a 'related ingredients' section at the bottom of each detail page."
+    },
+    {
+      title: "Festival Food Calendar",
+      diff: "Easy", type: "Calendar UI",
+      chips: ["Calendar View", "Festival Markers", "Food Cards", "Region Filter"],
+      desc: "Design a monthly calendar UI where festival dates across India are visually marked with colored indicators. When a festival date is clicked, display a modal or side panel showing food cards for traditional dishes associated with that festival and region. Each food card shows the dish name, region, and a short description. Support month navigation and a list view alternative."
+    },
+    {
+      title: "Cuisine Family Tree",
+      diff: "Hard", type: "Visualization",
+      chips: ["Tree Graph", "Node Detail", "Influence Lines", "Interactive"],
+      desc: "Design an interactive tree visualization showing how regional cuisines across India are connected, influenced by, and evolved from one another. Each node represents a cuisine and should be clickable to open a detail panel with cuisine history, key dishes and cultural influences. Connecting lines should animate on hover to show the direction of culinary influence. Include zoom and pan controls for exploration."
+    },
+    {
+      title: "Street Food Directory",
+      diff: "Easy", type: "Directory",
+      chips: ["Search Bar", "Card Grid", "Region Filter", "City Tags"],
+      desc: "Design a searchable card grid of iconic Indian street foods filterable by region and city. Each card displays the dish name, city of origin, a food photograph placeholder and a short one-liner description. Clicking a card should open a detail view with ingredients, best places to find it and fun facts. Include a featured banner at the top for popular or seasonal street foods."
+    },
+    {
+      title: "Traditional Cooking Techniques Wiki",
+      diff: "Medium", type: "Wiki",
+      chips: ["Listing Page", "Detail Pages", "Recipe Links", "Search"],
+      desc: "Design a wiki-style listing page for traditional Indian cooking techniques such as dum, tadka, bhunao and more. Each technique should have its own detail page describing the method, the cookware traditionally used, the regions it is common in and a list of recipes that use it. Add a visual step indicator to show stages of the technique and a difficulty rating."
+    },
+    {
+      title: "Spice Guide & Flavor Profiles",
+      diff: "Medium", type: "Explorer",
+      chips: ["Spice Cards", "Flavor Profile", "Health Info", "Recipe Links"],
+      desc: "Design a spice explorer UI with individual cards for each Indian spice. Each card should show the spice name, a flavor profile tag (earthy, pungent, sweet, etc.), key health properties, regional usage patterns and the recipes it commonly appears in. Include a flavor intensity slider visualization and a pairing guide section showing which spices complement each other."
+    },
+    {
+      title: "Historical Food Timeline",
+      diff: "Medium", type: "Timeline",
+      chips: ["Horizontal Scroll", "Era Nodes", "Dish Cards", "Cultural Context"],
+      desc: "Design a horizontally scrollable timeline grouping Indian dishes by historical era — from the Indus Valley civilization through the Mughal period, colonial era and independence. Each node on the timeline should display an era label, a representative dish image and a short description of its cultural and historical significance. Include a vertical mode for mobile devices and smooth scroll snapping between eras."
+    },
+    {
+      title: "Forgotten & Endangered Recipes Archive",
+      diff: "Easy", type: "Archive",
+      chips: ["Archive Page", "Flag Button", "Community Tags", "Rarity Badge"],
+      desc: "Design a dedicated archive page highlighting recipes that are at risk of being lost to time. Display these recipes with a special 'Endangered' badge and a rarity indicator. Add a 'Flag as Endangered' button on recipe detail pages so community members can mark rare recipes they know. Include a submission form so contributors can add forgotten recipes they have personally encountered."
+    },
+    {
+      title: "Dietary Filter Explorer",
+      diff: "Easy", type: "Filter UI",
+      chips: ["Multi-select", "Jain", "Vegan", "Sattvic", "Gluten-Free"],
+      desc: "Design a multi-select filter bar prominently placed on the recipe listing page with clear toggle options for Jain, Vegan, Sattvic, Gluten-Free and other dietary categories. The recipe listing should reactively update and show only matching results as filters are selected or deselected without a page reload. Show a live count of matching recipes and allow users to save their filter preferences."
+    },
+    {
+      title: "Community Food Stories",
+      diff: "Easy", type: "Community",
+      chips: ["Stories Feed", "Dish Links", "Author Profile", "Submission Form"],
+      desc: "Design a stories feed showing short personal food memories contributed by community members. Each story should be linked to a specific dish in the database and display the author's name, their home region and a timestamp. Include a submission form where new contributors can share their own food memories with optional photo upload. Support likes and save to favorites functionality."
+    },
+    {
+      title: "Multilingual Recipe Support",
+      diff: "Easy", type: "Localisation",
+      chips: ["Language Selector", "Tamil", "Bengali", "Marathi", "Hindi"],
+      desc: "Add a language selector component to the recipe listing page so users can browse recipes written in regional languages including Tamil, Bengali, Marathi and Hindi. Display a coloured language badge on each recipe card to indicate available translations. The UI chrome should also adapt to the selected language. Include a fallback to English when a translation is unavailable."
+    },
+    {
+      title: "Chef & Cook Spotlights",
+      diff: "Easy", type: "Profiles",
+      chips: ["Gallery View", "Profile Pages", "Recipe Feed", "Bio Section"],
+      desc: "Design a spotlight gallery of home cooks and regional chefs who are actively preserving traditional food culture. Each profile page should show the cook's bio, a profile photo placeholder, their home region and all recipes they have contributed to the platform. Include a follow button, a contribution count badge and a featured quote from the cook about their culinary journey."
+    },
+    {
+      title: "Food & Religion Module",
+      diff: "Medium", type: "Filter UI",
+      chips: ["Religion Filter", "Hindu", "Muslim", "Jain", "Christian"],
+      desc: "Design a religion filter page with prominent category buttons for Hindu, Muslim, Jain, Christian and other traditions. Each category page should display associated recipes and include a static informational section explaining the connection between that religion and its food traditions, dietary rules and festive food culture. The design should be respectful, informative and visually consistent across all religion pages."
+    }
+  ];
+
+  function openModal(i) {
+    const f = features[i];
+    document.getElementById('modalTitle').textContent = f.title;
+    document.getElementById('modalMeta').textContent = f.type + '  ·  Difficulty: ' + f.diff;
+    document.getElementById('modalDesc').textContent = f.desc;
+    const chipsEl = document.getElementById('modalChips');
+    chipsEl.innerHTML = f.chips.map(c => `<span class="meta-chip">${c}</span>`).join('');
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function closeModalOnBg(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  function filterCards(diff, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.card-item').forEach(card => {
+      if (diff === 'all' || card.dataset.diff === diff) {
+        card.classList.remove('hidden');
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+  }
+</script>
+</body>
+</html>
