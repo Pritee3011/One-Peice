@@ -426,17 +426,17 @@
     <p class="subtitle">Open Source Competition — Build an inclusive hiring ecosystem utilizing advanced vector engines and accessibility tools.</p>
      <div class="stats">
       <div class="stat"><div class="stat-value">15</div><div class="stat-label">Features</div></div>
-      <div class="stat"><div class="stat-value">3</div><div class="stat-label">Easy</div></div>
-      <div class="stat"><div class="stat-value">9</div><div class="stat-label">Medium</div></div>
-      <div class="stat"><div class="stat-value">3</div><div class="stat-label">Hard</div></div>
+      <div class="stat"><div class="stat-value">2</div><div class="stat-label">Easy</div></div>
+      <div class="stat"><div class="stat-value">7</div><div class="stat-label">Medium</div></div>
+      <div class="stat"><div class="stat-value">5</div><div class="stat-label">Hard</div></div>
     </div>
   </header>
 
   <div class="filters">
     <button class="filter-btn active" onclick="filterCards('all', this)">All 15</button>
-    <button class="filter-btn" onclick="filterCards('easy', this)">Easy 3</button>
-    <button class="filter-btn" onclick="filterCards('medium', this)">Medium 9</button>
-    <button class="filter-btn" onclick="filterCards('hard', this)">Hard 3</button>
+    <button class="filter-btn" onclick="filterCards('easy', this)">Easy 2</button>
+    <button class="filter-btn" onclick="filterCards('medium', this)">Medium 7</button>
+    <button class="filter-btn" onclick="filterCards('hard', this)">Hard 5</button>
   </div>
 
   <div class="section-label">
@@ -482,10 +482,10 @@
   const features = [
     { id: 'F01', title: 'Onboarding Form', cat: 'Core UX', diff: 'Easy', pts: 40, desc: 'A clean multi-step form collecting candidate name, skills as removable tag chips, years of experience, and preferred job roles.', expected: 'Multi-step form with smooth transitions and POST API.', chips: ['UX/UI', 'Forms', 'API Post'] },
     { id: 'F02', title: 'Disability Profiler', cat: 'Core UX', diff: 'Easy', pts: 40, desc: 'Accordion selection for disability types influencing downstream logic.', expected: 'Accordion UI with POST API.', chips: ['Accessibility', 'Logic Tree'] },
-    { id: 'F03', title: 'Ability Input Module', cat: 'Core UX', diff: 'Medium', pts: 80, desc: '5 sliders updating descriptions dynamically based on input values.', expected: 'Live sliders with POST API.', chips: ['Interactive UI', 'State Management'] },
-    { id: 'F04', title: 'Job Posting Creator', cat: 'Employer Tools', diff: 'Medium', pts: 80, desc: 'Employer form with task sliders for defining specific job requirements.', expected: 'Form submission to API.', chips: ['Admin Panel', 'Forms'] },
-    { id: 'F05', title: 'Ability Vector Generator', cat: 'AI Engine', diff: 'Medium', pts: 80, desc: 'Convert sliders to mathematical vector and display as a visual radar chart.', expected: 'Vector transformation + chart rendering.', chips: ['Data Vis', 'Math'] },
-    { id: 'F06', title: 'Job Vector Generator', cat: 'AI Engine', diff: 'Medium', pts: 80, desc: 'Generate a target job vector directly from the employer task sliders.', expected: 'Auto vector generation.', chips: ['Algorithms', 'Logic'] },
+    { id: 'F03', title: 'Ability Input Module', cat: 'Core UX', diff: 'Hard', pts: 80, desc: '5 sliders updating descriptions dynamically based on input values.', expected: 'Live sliders with POST API.', chips: ['Interactive UI', 'State Management'] },
+    { id: 'F04', title: 'Job Posting Creator', cat: 'Employer Tools', diff: 'Hard', pts: 80, desc: 'Employer form with task sliders for defining specific job requirements.', expected: 'Form submission to API.', chips: ['Admin Panel', 'Forms'] },
+    { id: 'F05', title: 'Ability Vector Generator', cat: 'AI Engine', diff: 'Hard', pts: 80, desc: 'Convert sliders to mathematical vector and display as a visual radar chart.', expected: 'Vector transformation + chart rendering.', chips: ['Data Vis', 'Math'] },
+    { id: 'F06', title: 'Job Vector Generator', cat: 'AI Engine', diff: 'Hard', pts: 80, desc: 'Generate a target job vector directly from the employer task sliders.', expected: 'Auto vector generation.', chips: ['Algorithms', 'Logic'] },
     { id: 'F07', title: 'Cosine Similarity Engine', cat: 'AI Engine', diff: 'Hard', pts: 120, desc: 'Compute cosine similarity mathematically between candidate and job vectors.', expected: 'Math Function + API endpoint.', chips: ['Machine Learning', 'Linear Algebra'] },
     { id: 'F08', title: 'Compatibility Score', cat: 'AI Engine', diff: 'Medium', pts: 80, desc: 'Display final compatibility score using an animated SVG circle.', expected: 'Animated score UI rendering.', chips: ['SVG', 'Animations'] },
     { id: 'F09', title: 'Gap Identification Engine', cat: 'AI Engine', diff: 'Hard', pts: 120, desc: 'Identify and isolate specific skill gaps between the user and the job.', expected: 'Ranked gap list output.', chips: ['Data Processing', 'Analysis'] },
@@ -493,7 +493,7 @@
     { id: 'F11', title: 'Candidate Dashboard', cat: 'Dashboards', diff: 'Medium', pts: 80, desc: 'Personal dashboard showing best job matches based on computed vectors.', expected: 'Secure Dashboard UI.', chips: ['Frontend Layout', 'Data Fetch'] },
     { id: 'F12', title: 'Employer Dashboard', cat: 'Dashboards', diff: 'Medium', pts: 80, desc: 'Applicant ranking dashboard sorting candidates by similarity scores.', expected: 'Sorted applicants list.', chips: ['Admin Panel', 'Sorting Algorithms'] },
     { id: 'F13', title: 'Search & Filter', cat: 'Core UX', diff: 'Medium', pts: 80, desc: 'Live, debounce-optimized search system for navigating candidates/jobs.', expected: 'Dynamically filtered job list.', chips: ['Debounce', 'Live Filtering'] },
-    { id: 'F14', title: 'Text-to-Speech', cat: 'Accessibility', diff: 'Easy', pts: 40, desc: 'Convert on-screen text to speech utilizing the Web Speech API.', expected: 'Audio Speech playback.', chips: ['Web Speech API', 'A11y'] },
+    { id: 'F14', title: 'Text-to-Speech', cat: 'Accessibility', diff: 'Medium', pts: 40, desc: 'Convert on-screen text to speech utilizing the Web Speech API.', expected: 'Audio Speech playback.', chips: ['Web Speech API', 'A11y'] },
     { id: 'F15', title: 'Speech-to-Text', cat: 'Accessibility', diff: 'Medium', pts: 80, desc: 'Voice-based input form processing spoken words into text fields.', expected: 'Live voice transcription.', chips: ['Voice Recognition', 'A11y'] }
   ];
 
