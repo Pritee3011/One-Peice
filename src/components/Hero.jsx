@@ -113,7 +113,7 @@ export default function Hero() {
         <div className="inline-flex items-center gap-2 mb-8 animate-fade-up" style={{ animationDelay: '0.1s', opacity: 0 }}>
           <span className="section-tag">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald mr-2 animate-pulse" />
-            Open Source Event 2025
+            Open Source Event 2026
           </span>
         </div>
 
